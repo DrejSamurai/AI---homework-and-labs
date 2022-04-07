@@ -14,4 +14,4 @@ if __name__ == '__main__':
         problem.addConstraint(ExactSumConstraint(34), [[row] * 4 + i for i in range(4)])
 
     for col in range(4):
-        problem.addConstraint(ExactSumConstraint(34), [[col] * 4  * i for i in range(4)])
+        problem.addConstraint(ExactSumConstraint(34), [[col] * 4 * i for i in range(4)])
