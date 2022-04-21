@@ -1,4 +1,5 @@
 import bisect
+import math
 
 """
 Дефинирање на класа за структурата на проблемот кој ќе го решаваме со пребарување.
@@ -465,7 +466,7 @@ class Snake(Problem):
         snake_direction = state[2]
         zeleni_jabolki_list = state[3]
 
-
+        # FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD FORWARD
         # snake_direction  = "down"
         # Move Forward
         if snake_head[1] - 1 >= 0 and snake_direction == "down" and (
@@ -487,11 +488,52 @@ class Snake(Problem):
 
             successors["ProdolzhiPravo"] = (new_snake_head, tuple(new_snake_body), "down", tuple(new_zeleni_jabolki))
 
-        # snake_direction  = "down"
-        # Turn Left
-        if snake_head[0] + 1 < grid_size[0] and snake_direction == "down" and (
-                snake_head_x + 1, snake_head_y) not in snake_body:
-            new_snake_head = (snake_head_x + 1, snake_head_y)
+        # snake_direction = "up"
+        # Move Forward
+        if snake_head[1] + 1 < grid_size[0] and snake_direction == "up" and (
+                    snake_head_x, snake_head_y + 1) not in snake_body:
+                new_snake_head = (snake_head_x, snake_head_y + 1)
+                new_snake_body = []
+                new_zeleni_jabolki = list(zeleni_jabolki_list)
+                snakeBodyLen = len(snake_body)
+                snake_tail = tuple(snake_man_body[0])
+
+                new_snake_body.append(snake_head)
+                for x in range(snakeBodyLen - 1):
+                    new_snake_body.append(snake_body[x])
+
+                if (snake_head_x, snake_head_y + 1) in zeleni_jabolki_list:
+                    new_zeleni_jabolki.remove((snake_head_x, snake_head_y + 1))
+                    new_snake_body.append(snake_tail)
+
+                successors["ProdolzhiPravo"] = (new_snake_head, tuple(new_snake_body), "up", tuple(new_zeleni_jabolki))
+
+        # snake_direction = "right"
+        # Move Forward
+        if snake_head[0] + 1 < grid_size[0] and snake_direction == "right" and (
+                        snake_head_x + 1, snake_head_y) not in snake_body:
+                    new_snake_head = (snake_head_x + 1, snake_head_y)
+                    new_snake_body = []
+                    new_zeleni_jabolki = list(zeleni_jabolki_list)
+                    snakeBodyLen = len(snake_body)
+                    snake_tail = tuple(snake_man_body[0])
+
+                    new_snake_body.append(snake_head)
+                    for x in range(snakeBodyLen - 1):
+                        new_snake_body.append(snake_body[x])
+
+                    if (snake_head_x + 1, snake_head_y) in zeleni_jabolki_list:
+                        new_zeleni_jabolki.remove((snake_head_x + 1, snake_head_y))
+                        new_snake_body.append(snake_tail)
+
+                    successors["ProdolzhiPravo"] = (
+                    new_snake_head, tuple(new_snake_body), "right", tuple(new_zeleni_jabolki))
+
+        # snake_direction = "left"
+        # Move Forward
+        if snake_head[0] - 1 >= 0 and snake_direction == "left" and (
+                snake_head_x - 1, snake_head_y) not in snake_body:
+            new_snake_head = (snake_head_x - 1, snake_head_y)
             new_snake_body = []
             new_zeleni_jabolki = list(zeleni_jabolki_list)
             snakeBodyLen = len(snake_body)
@@ -501,13 +543,13 @@ class Snake(Problem):
             for x in range(snakeBodyLen - 1):
                 new_snake_body.append(snake_body[x])
 
-            if (snake_head_x + 1, snake_head_y) in zeleni_jabolki_list:
-                new_zeleni_jabolki.remove((snake_head_x + 1, snake_head_y))
+            if (snake_head_x - 1, snake_head_y) in zeleni_jabolki_list:
+                new_zeleni_jabolki.remove((snake_head_x - 1, snake_head_y))
                 new_snake_body.append(snake_tail)
 
+            successors["ProdolzhiPravo"] = (new_snake_head, tuple(new_snake_body), "left", tuple(new_zeleni_jabolki))
 
-            successors["SvrtiLevo"] = (new_snake_head, tuple(new_snake_body), "right", tuple(new_zeleni_jabolki))
-
+        # RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHTRIGHT RIGHT RIGHT RIGHTRIGHT RIGHT RIGHT RIGHTRIGHT RIGHT RIGHT RIGHT
         # snake_direction  = "down"
         # Turn Right
         if snake_head[0] - 1 >= 0 and snake_direction == "down" and (
@@ -528,46 +570,6 @@ class Snake(Problem):
 
             successors["SvrtiDesno"] = (new_snake_head, tuple(new_snake_body), "left", tuple(new_zeleni_jabolki))
 
-        # snake_direction = "up"
-        # Move Forward
-        if snake_head[1] + 1 < grid_size[0] and snake_direction == "up" and (
-                snake_head_x, snake_head_y + 1) not in snake_body:
-            new_snake_head = (snake_head_x, snake_head_y + 1)
-            new_snake_body = []
-            new_zeleni_jabolki = list(zeleni_jabolki_list)
-            snakeBodyLen = len(snake_body)
-            snake_tail = tuple(snake_man_body[0])
-
-            new_snake_body.append(snake_head)
-            for x in range(snakeBodyLen - 1):
-                new_snake_body.append(snake_body[x])
-
-            if (snake_head_x, snake_head_y + 1) in zeleni_jabolki_list:
-                new_zeleni_jabolki.remove((snake_head_x, snake_head_y + 1))
-                new_snake_body.append(snake_tail)
-
-
-            successors["ProdolzhiPravo"] = (new_snake_head, tuple(new_snake_body), "up", tuple(new_zeleni_jabolki))
-
-        # snake_direction = "up"
-        # Turn Left
-        if snake_head[0] - 1 >= 0 and snake_direction == "up" and (
-                snake_head_x - 1, snake_head_y) not in snake_body:
-            new_snake_head = (snake_head_x - 1, snake_head_y)
-            new_snake_body = []
-            new_zeleni_jabolki = list(zeleni_jabolki_list)
-            snakeBodyLen = len(snake_body)
-            snake_tail = tuple(snake_man_body[0])
-
-            new_snake_body.append(snake_head)
-            for x in range(snakeBodyLen - 1):
-                new_snake_body.append(snake_body[x])
-
-            if (snake_head_x - 1, snake_head_y) in zeleni_jabolki_list:
-                new_zeleni_jabolki.remove((snake_head_x - 1, snake_head_y))
-                new_snake_body.append(snake_tail)
-
-            successors["SvrtiLevo"] = (new_snake_head, tuple(new_snake_body), "left", tuple(new_zeleni_jabolki))
 
         # snake_direction = "up"
         # Turn Right
@@ -590,110 +592,6 @@ class Snake(Problem):
 
             successors["SvrtiDesno"] = (new_snake_head, tuple(new_snake_body), "right", tuple(new_zeleni_jabolki))
 
-        # snake_direction = "left"
-        # Move Forward
-        if snake_head[0] - 1 >= 0 and snake_direction == "left" and (
-                snake_head_x - 1, snake_head_y) not in snake_body:
-            new_snake_head = (snake_head_x - 1, snake_head_y)
-            new_snake_body = []
-            new_zeleni_jabolki = list(zeleni_jabolki_list)
-            snakeBodyLen = len(snake_body)
-            snake_tail = tuple(snake_man_body[0])
-
-            new_snake_body.append(snake_head)
-            for x in range(snakeBodyLen - 1):
-                new_snake_body.append(snake_body[x])
-
-            if (snake_head_x - 1, snake_head_y) in zeleni_jabolki_list:
-                new_zeleni_jabolki.remove((snake_head_x - 1, snake_head_y))
-                new_snake_body.append(snake_tail)
-
-
-            successors["ProdolzhiPravo"] = (new_snake_head, tuple(new_snake_body), "left", tuple(new_zeleni_jabolki))
-
-        # snake_direction = "left"
-        # Turn Left
-        if snake_head[1] - 1 >= 0 and snake_direction == "left" and (
-                snake_head_x, snake_head_y - 1) not in snake_body:
-            new_snake_head = (snake_head_x, snake_head_y - 1)
-            new_snake_body = []
-            new_zeleni_jabolki = list(zeleni_jabolki_list)
-            snakeBodyLen = len(snake_body)
-            snake_tail = tuple(snake_man_body[0])
-
-            new_snake_body.append(snake_head)
-            for x in range(snakeBodyLen - 1):
-                new_snake_body.append(snake_body[x])
-
-            if (snake_head_x, snake_head_y - 1) in zeleni_jabolki_list:
-                new_zeleni_jabolki.remove((snake_head_x, snake_head_y - 1))
-                new_snake_body.append(snake_tail)
-
-
-            successors["SvrtiLevo"] = (new_snake_head, tuple(new_snake_body), "down", tuple(new_zeleni_jabolki))
-
-        # snake_direction = "left"
-        # Turn Right
-        if snake_head[1] + 1 < grid_size[1] and snake_direction == "left" and (
-                snake_head_x + 1, snake_head_y) not in snake_body:
-            new_snake_head = (snake_head_x + 1, snake_head_y)
-            new_snake_body = []
-            new_zeleni_jabolki = list(zeleni_jabolki_list)
-            snakeBodyLen = len(snake_body)
-            snake_tail = tuple(snake_man_body[0])
-
-            new_snake_body.append(snake_head)
-            for x in range(snakeBodyLen - 1):
-                new_snake_body.append(snake_body[x])
-
-            if (snake_head_x + 1, snake_head_y) in zeleni_jabolki_list:
-                new_zeleni_jabolki.remove((snake_head_x + 1, snake_head_y))
-                new_snake_body.append(snake_tail)
-
-
-            successors["SvrtiDesno"] = (new_snake_head, tuple(new_snake_body), "up", tuple(new_zeleni_jabolki))
-
-        # snake_direction = "right"
-        # Move Forward
-        if snake_head[0] + 1 < grid_size[0] and snake_direction == "right" and (
-                snake_head_x + 1, snake_head_y) not in snake_body:
-            new_snake_head = (snake_head_x + 1, snake_head_y)
-            new_snake_body = []
-            new_zeleni_jabolki = list(zeleni_jabolki_list)
-            snakeBodyLen = len(snake_body)
-            snake_tail = tuple(snake_man_body[0])
-
-            new_snake_body.append(snake_head)
-            for x in range(snakeBodyLen - 1):
-                new_snake_body.append(snake_body[x])
-
-            if (snake_head_x + 1, snake_head_y) in zeleni_jabolki_list:
-                new_zeleni_jabolki.remove((snake_head_x + 1, snake_head_y))
-                new_snake_body.append(snake_tail)
-
-
-            successors["ProdolzhiPravo"] = (new_snake_head, tuple(new_snake_body), "right", tuple(new_zeleni_jabolki))
-
-        # snake_direction = "right"
-        # Turn Left
-        if snake_head[1] + 1 < grid_size[1] and snake_direction == "right" and (
-                snake_head_x, snake_head_y + 1) not in snake_body:
-            new_snake_head = (snake_head_x, snake_head_y + 1)
-            new_snake_body = []
-            new_zeleni_jabolki = list(zeleni_jabolki_list)
-            snakeBodyLen = len(snake_body)
-            snake_tail = tuple(snake_man_body[0])
-
-            new_snake_body.append(snake_head)
-            for x in range(snakeBodyLen - 1):
-                new_snake_body.append(snake_body[x])
-
-            if (snake_head_x, snake_head_y + 1) in zeleni_jabolki_list:
-                new_zeleni_jabolki.remove((snake_head_x, snake_head_y + 1))
-                new_snake_body.append(snake_tail)
-
-
-            successors["SvrtiLevo"] = (new_snake_head, tuple(new_snake_body), "up", tuple(new_zeleni_jabolki))
 
         # snake_direction = "right"
         # Turn Right
@@ -715,6 +613,113 @@ class Snake(Problem):
 
             successors["SvrtiDesno"] = (new_snake_head, tuple(new_snake_body), "down", tuple(new_zeleni_jabolki))
 
+            # snake_direction = "left"
+            # Turn Right
+        if snake_head[1] + 1 < grid_size[1] and snake_direction == "left" and (
+                snake_head_x + 1, snake_head_y) not in snake_body:
+            new_snake_head = (snake_head_x + 1, snake_head_y)
+            new_snake_body = []
+            new_zeleni_jabolki = list(zeleni_jabolki_list)
+            snakeBodyLen = len(snake_body)
+            snake_tail = tuple(snake_man_body[0])
+
+            new_snake_body.append(snake_head)
+            for x in range(snakeBodyLen - 1):
+                new_snake_body.append(snake_body[x])
+
+            if (snake_head_x + 1, snake_head_y) in zeleni_jabolki_list:
+                new_zeleni_jabolki.remove((snake_head_x + 1, snake_head_y))
+                new_snake_body.append(snake_tail)
+
+            successors["SvrtiDesno"] = (new_snake_head, tuple(new_snake_body), "up", tuple(new_zeleni_jabolki))
+
+
+
+        # LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT LEFT
+        # snake_direction  = "down"
+        # Turn Left
+        if snake_head[0] + 1 < grid_size[0] and snake_direction == "down" and (
+                snake_head_x + 1, snake_head_y) not in snake_body:
+            new_snake_head = (snake_head_x + 1, snake_head_y)
+            new_snake_body = []
+            new_zeleni_jabolki = list(zeleni_jabolki_list)
+            snakeBodyLen = len(snake_body)
+            snake_tail = tuple(snake_man_body[0])
+
+            new_snake_body.append(snake_head)
+            for x in range(snakeBodyLen - 1):
+                new_snake_body.append(snake_body[x])
+
+            if (snake_head_x + 1, snake_head_y) in zeleni_jabolki_list:
+                new_zeleni_jabolki.remove((snake_head_x + 1, snake_head_y))
+                new_snake_body.append(snake_tail)
+
+
+            successors["SvrtiLevo"] = (new_snake_head, tuple(new_snake_body), "right", tuple(new_zeleni_jabolki))
+
+
+        # snake_direction = "up"
+        # Turn Left
+        if snake_head[0] - 1 >= 0 and snake_direction == "up" and (
+                    snake_head_x - 1, snake_head_y) not in snake_body:
+                new_snake_head = (snake_head_x - 1, snake_head_y)
+                new_snake_body = []
+                new_zeleni_jabolki = list(zeleni_jabolki_list)
+                snakeBodyLen = len(snake_body)
+                snake_tail = tuple(snake_man_body[0])
+
+                new_snake_body.append(snake_head)
+                for x in range(snakeBodyLen - 1):
+                    new_snake_body.append(snake_body[x])
+
+                if (snake_head_x - 1, snake_head_y) in zeleni_jabolki_list:
+                    new_zeleni_jabolki.remove((snake_head_x - 1, snake_head_y))
+                    new_snake_body.append(snake_tail)
+
+                successors["SvrtiLevo"] = (new_snake_head, tuple(new_snake_body), "left", tuple(new_zeleni_jabolki))
+
+
+        # snake_direction = "right"
+        # Turn Left
+        if snake_head[1] + 1 < grid_size[1] and snake_direction == "right" and (
+                snake_head_x, snake_head_y + 1) not in snake_body:
+            new_snake_head = (snake_head_x, snake_head_y + 1)
+            new_snake_body = []
+            new_zeleni_jabolki = list(zeleni_jabolki_list)
+            snakeBodyLen = len(snake_body)
+            snake_tail = tuple(snake_man_body[0])
+
+            new_snake_body.append(snake_head)
+            for x in range(snakeBodyLen - 1):
+                new_snake_body.append(snake_body[x])
+
+            if (snake_head_x, snake_head_y + 1) in zeleni_jabolki_list:
+                new_zeleni_jabolki.remove((snake_head_x, snake_head_y + 1))
+                new_snake_body.append(snake_tail)
+
+            successors["SvrtiLevo"] = (new_snake_head, tuple(new_snake_body), "up", tuple(new_zeleni_jabolki))
+
+
+            # snake_direction = "left"
+            # Turn Left
+        if snake_head[1] - 1 >= 0 and snake_direction == "left" and (
+                snake_head_x, snake_head_y - 1) not in snake_body:
+            new_snake_head = (snake_head_x, snake_head_y - 1)
+            new_snake_body = []
+            new_zeleni_jabolki = list(zeleni_jabolki_list)
+            snakeBodyLen = len(snake_body)
+            snake_tail = tuple(snake_man_body[0])
+
+            new_snake_body.append(snake_head)
+            for x in range(snakeBodyLen - 1):
+                new_snake_body.append(snake_body[x])
+
+            if (snake_head_x, snake_head_y - 1) in zeleni_jabolki_list:
+                new_zeleni_jabolki.remove((snake_head_x, snake_head_y - 1))
+                new_snake_body.append(snake_tail)
+
+            successors["SvrtiLevo"] = (new_snake_head, tuple(new_snake_body), "down", tuple(new_zeleni_jabolki))
+
         return successors
 
     def actions(self, state):
@@ -734,9 +739,27 @@ class Snake(Problem):
 
     def h(self, node):
         apple_num = len(node.state[3])
-        num = self.apples_num
+        snake_head = node.state[0]
+        zeleni_jabolki_list = list(node.state[3])
+        snake_x, snake_y = snake_head[0], snake_head[1]
 
-        return apple_num/num
+        if apple_num > 0:
+            first_apple_x, first_apple_y = zeleni_jabolki_list[0][0], zeleni_jabolki_list[0][1]
+            min_manh_dist = abs((snake_x - first_apple_x)) + abs(snake_y + first_apple_y)
+            # min_euql_dist = math.sqrt(pow(first_apple_x-snake_x, 2) + pow(first_apple_y - snake_y, 2))
+
+            for apple in zeleni_jabolki_list:
+                apple_x, apple_y = apple[0], apple[1]
+                new_min_manh_dist = abs((snake_x - apple_x)) + abs(snake_y + apple_y)
+                # new_min_euql_dist = math.sqrt(pow(apple_x - snake_x, 2) + pow(apple_y - snake_y, 2))
+                if new_min_manh_dist <= min_manh_dist:
+                    min_manh_dist = new_min_manh_dist
+
+            return min_manh_dist
+
+        else:
+            return 0
+
 
 if __name__ == '__main__':
     snake_man_head = (0, 7)
@@ -751,7 +774,7 @@ if __name__ == '__main__':
         zeleni_jabolki.append(a)
     new_zeleni_jabolki = tuple(zeleni_jabolki)
 
-    snake = Snake(zeleni_jabolki_num,(snake_man_head, tuple(snake_man_body), snake_man_direction, new_zeleni_jabolki))
+    snake = Snake(zeleni_jabolki_num, (snake_man_head, tuple(snake_man_body), snake_man_direction, new_zeleni_jabolki))
 
     if zeleni_jabolki_num == 0:
         print("[]")
