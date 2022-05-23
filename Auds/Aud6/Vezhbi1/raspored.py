@@ -16,7 +16,7 @@ def check_valid_ml(t1, t2):
     hour1 = t1[-2:]
     hour2 = t2[-2:]
 
-    if hour1==hour2:
+    if hour1 == hour2:
         return False
     else:
         return True
