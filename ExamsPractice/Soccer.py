@@ -1,4 +1,5 @@
 import bisect
+import math
 
 """
 Дефинирање на класа за структурата на проблемот кој ќе го решаваме со пребарување.
@@ -448,67 +449,92 @@ def recursive_best_first_search(problem, h=None):
     return result
 
 
-class Explorer(Problem):
-    def __init__(self, initial, goal):
+"""
+Дадена е табла 8х6, каде што се поставени човече и топка. Потребно е човечето со туркање на топката да ја доведе до
+голот кој е обележан со сива боја. На таблата дополнително има противници кои се обележани со сина боја. Противниците
+се статички не се движат.
+Човечето може да се движи во пет насоки: горе, долу, десно, горе десно, долу десно за една позиција. При движењето, 
+доколку пред него се наоѓа топката, може да ја турне топката во насока во која се движи. Топката не може да се влече,
+туку само да се турка. Човечето не може да се наоѓа на исто поле како и топката или како некој од противниците.
+Топката исто така не може да се наоѓа на поле кое е соседно со некој од противниците(хоризонтално, вертикално или 
+дијагонално) или на исто поле со некој од противниците. 
+За сите тест примери големината на таблата е иста, а позицијата на човечето и топката се менуваат и се читаат од 
+стандарден влез. Позицијата на противниците и голот е иста во сите примери. Ваша задача е да имплементирате поместу-
+вање на ловелето во successor функцијата. Акциите се именуваат како "Pomesti choveche gore/dolu/desno/gore-desno/dolu-desno"
+или ако турка топката "Turni topka gore/desno/gore-desno/dolu-desno" ако при поместување на ловечето се турнува топката.
+Дополнително потребно е да се провери дали сте стигнале до целта односно да ја имплементниорате goalt_test и 
+check_valid. Треба да имплементирате информирано пребарување и да ја решите во најмал број на чекори.
+"""
+
+
+class Football(Problem):
+
+    def __init__(self, opponents_pos, initial, goal):
         super().__init__(initial, goal)
-        self.grid_size = [8, 6]
+        self.opponents_pos = opponents_pos
+
+    @staticmethod
+    def check_valid(state, opponents):
+        man_pos = state[0]
+        ball_pos = state[1]
+        op_defended_pos = []
+
+        for oppnent in opponents:
+            op_defended_pos.append((oppnent[0] - 1, oppnent[1] + 1))
+            op_defended_pos.append((oppnent[0], oppnent[1] + 1))
+            op_defended_pos.append((oppnent[0] + 1, oppnent[1] + 1))
+            op_defended_pos.append((oppnent[0] - 1, oppnent[1]))
+            op_defended_pos.append((oppnent[0] + 1, oppnent[1]))
+            op_defended_pos.append((oppnent[0] - 1, oppnent[1] - 1))
+            op_defended_pos.append((oppnent[0], oppnent[1] - 1))
+            op_defended_pos.append((oppnent[0] + 1, oppnent[1] - 1))
+
+        return man_pos[0] >= 0 and man_pos[0] < 8 and \
+               man_pos[1] >= 0 and man_pos[1] < 6 and \
+               ball_pos[0] >= 0 and ball_pos[0] < 8 and \
+               ball_pos[1] >= 0 and ball_pos[1] < 6 and (ball_pos[0], ball_pos[1]) not in op_defended_pos and \
+               man_pos[0] != ball_pos[0] and man_pos[1] != ball_pos[1] and \
+               (man_pos[0], man_pos[1]) not in opponents
 
     def successor(self, state):
-        # d=-1 down, d=1 up
-        # (x,y,(o1x,o1y,d),(o2x,o2y,d))
+        man_pos = state[0]
+        ball_pos = state[1]
+        opponents = self.opponents_pos
         successors = dict()
-        man_x = state[0]
-        man_y = state[1]
-        obstacle1 = list(state[2])
-        obstacle2 = list(state[3])
 
-        if obstacle1[2] == 1:  # up
-            if obstacle1[1] == self.grid_size[1] - 1:
-                obstacle1[2] = -1
-                obstacle1[1] -= 1
-            else:
-                obstacle1[1] += 1
-        else:
-            if obstacle1[1] == 0:
-                obstacle2[2] = 1
-                obstacle1[1] += 1
-            else:
-                obstacle1[1] -= 1
+        #Choveche Movement
+        #Gore
+        if self.check_valid(opponents, ((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1]))):
+            successors["Pomesti choveche gore"] = (opponents, ((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1])))
+        #Dolu
+        if self.check_valid(opponents, ((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1]))):
+            successors["Pomesti choveche dolu"] = (opponents, ((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1])))
+        #Desno
+        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1]), (ball_pos[0], ball_pos[1]))):
+            successors["Pomesti choveche desno"] = (opponents, ((man_pos[0] + 1, man_pos[1]), (ball_pos[0], ball_pos[1])))
+        #Gore-Desno
+        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0], ball_pos[1]))):
+            successors["Pomesti choveche gore-desno"] = (opponents, ((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0], ball_pos[1])))
+        #Dolu-Desno
+        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0], ball_pos[1]))):
+            successors["Pomesti choveche gore-desno"] = (opponents, ((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0], ball_pos[1])))
 
-        if obstacle2[2] == 1:  # up
-            if obstacle2[1] == self.grid_size[1] - 1:
-                obstacle2[2] = -1
-                obstacle2[1] -= 1
-            else:
-                obstacle2[1] += 1
-        else:
-            if obstacle2[1] == 0:
-                obstacle2[2] = 1
-                obstacle2[1] += 1
-            else:
-                obstacle2[1] -= 1
-
-        obstacles = [(obstacle1[0], obstacle1[1]), (obstacle2[0], obstacle2[1])]
-
-        # right x = x+1
-        if man_x + 1 < self.grid_size[0] and (man_x + 1, man_y) not in obstacles:
-            successors["Right"] = (man_x + 1, man_y, (obstacle1[0], obstacle1[1], obstacle1[2]),
-                                   (obstacle2[0], obstacle2[1], obstacle2[2]))
-
-        # left x = x-1
-        if man_x - 1 > 0 and (man_x + 1, man_y) not in obstacles:
-            successors["Left"] = (man_x - 1, man_y, (obstacle1[0], obstacle1[1], obstacle1[2]),
-                                  (obstacle2[0], obstacle2[1], obstacle2[2]))
-
-        # up x = y+1
-        if man_y + 1 < self.grid_size[1] and (man_x,man_y+1) not in obstacles:
-            successors["Up"] = (man_x, man_y+1  , (obstacle1[0], obstacle1[1], obstacle1[2]),
-                                   (obstacle2[0], obstacle2[1],obstacle2[2]))
-
-        # down x = y-1
-        if man_y - 1 > 0 and (man_x,man_y-1) not in obstacles:
-            successors["Down"] = (man_x, man_y - 1, (obstacle1[0], obstacle1[1], obstacle1[2]),
-                                   (obstacle2[0], obstacle2[1],obstacle2[2]))
+        #Topka Movement
+        #Gore
+        if self.check_valid(opponents, ((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1] + 1))):
+            successors["Turni topka gore"] = (opponents, ((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1] + 1)))
+        #Dolu
+        if self.check_valid(opponents, ((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1] - 1))):
+            successors["Turni topka dolu"] = (opponents, ((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1] - 1)))
+        #Desno
+        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1]), (ball_pos[0] + 1, ball_pos[1]))):
+            successors["Turni topka desno"] = (opponents, ((man_pos[0] + 1, man_pos[1]), (ball_pos[0] + 1, ball_pos[1])))
+        #Gore-desno
+        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0] + 1, ball_pos[1]))):
+            successors["Turni topka gore-desno"] = (opponents, ((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0] + 1, ball_pos[1])))
+        #Dolu-Desno
+        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0] + 1, ball_pos[1]))):
+            successors["Turni topka gore-desno"] = (opponents, ((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0] + 1, ball_pos[1])))
 
         return successors
 
@@ -519,26 +545,19 @@ class Explorer(Problem):
         return self.successor(state)[action]
 
     def goal_test(self, state):
-        return state[0] == self.goal[0] and state[1] == self.goal[1]
+        return state[1] == (7, 2) or state[1] == (7, 3)
+        print()
 
     def h(self, node):
-        x_explorer = node.state[0]
-        y_explorer = node.state[1]
-        x_house = self.goal[0]
-        y_house = self.goal[1]
-        return abs(x_explorer - x_house) + abs(y_explorer - y_house)
+        return 0
 
 
 if __name__ == '__main__':
-    man_x = int(input())
-    man_y = int(input())
-    house_x = int(input())
-    house_y = int(input())
-    obstacle1 = (2, 5, -1)
-    obstacle2 = (5, 0, 1)
+    man_pos = tuple(map(int, input().split(',')))
+    ball_pos = tuple(map(int, input().split(',')))
+    goal_pos = [(7, 2), (7, 3)]
+    opponents = [(3, 3), (5, 3)]
 
-    house = [house_x,house_y]
-    explorer = Explorer((man_x, man_y, obstacle1, obstacle2), house)
-
-    rez = astar_search(explorer)
+    football = Football(opponents, (man_pos, ball_pos), goal_pos)
+    rez = astar_search(football)
     print(rez.solution())
