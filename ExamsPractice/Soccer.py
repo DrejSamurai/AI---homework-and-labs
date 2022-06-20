@@ -489,6 +489,8 @@ class Football(Problem):
             op_defended_pos.append((oppnent[0], oppnent[1] - 1))
             op_defended_pos.append((oppnent[0] + 1, oppnent[1] - 1))
 
+        op_defended_pos = tuple(op_defended_pos)
+
         return man_pos[0] >= 0 and man_pos[0] < 8 and \
                man_pos[1] >= 0 and man_pos[1] < 6 and \
                ball_pos[0] >= 0 and ball_pos[0] < 8 and \
@@ -501,39 +503,44 @@ class Football(Problem):
         ball_pos = state[1]
         opponents = self.opponents_pos
         successors = dict()
+        man_pos_x = man_pos[0]
+        man_pos_y = man_pos[1]
+
+        ball_pos_x = ball_pos[0]
+        ball_pos_y = ball_pos[1]
 
         #Choveche Movement
         #Gore
-        if self.check_valid(opponents, ((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1]))):
+        if self.check_valid(((man_pos_x, man_pos_y + 1), (ball_pos[0], ball_pos[1])), opponents):
             successors["Pomesti choveche gore"] = (opponents, ((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1])))
         #Dolu
-        if self.check_valid(opponents, ((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1]))):
+        if self.check_valid(((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1])), opponents):
             successors["Pomesti choveche dolu"] = (opponents, ((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1])))
         #Desno
-        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1]), (ball_pos[0], ball_pos[1]))):
+        if self.check_valid(((man_pos[0] + 1, man_pos[1]), (ball_pos[0], ball_pos[1])), opponents):
             successors["Pomesti choveche desno"] = (opponents, ((man_pos[0] + 1, man_pos[1]), (ball_pos[0], ball_pos[1])))
         #Gore-Desno
-        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0], ball_pos[1]))):
+        if self.check_valid(((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0], ball_pos[1])), opponents):
             successors["Pomesti choveche gore-desno"] = (opponents, ((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0], ball_pos[1])))
         #Dolu-Desno
-        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0], ball_pos[1]))):
+        if self.check_valid(((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0], ball_pos[1])), opponents):
             successors["Pomesti choveche gore-desno"] = (opponents, ((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0], ball_pos[1])))
 
         #Topka Movement
         #Gore
-        if self.check_valid(opponents, ((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1] + 1))):
+        if self.check_valid(((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1] + 1)), opponents):
             successors["Turni topka gore"] = (opponents, ((man_pos[0], man_pos[1] + 1), (ball_pos[0], ball_pos[1] + 1)))
         #Dolu
-        if self.check_valid(opponents, ((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1] - 1))):
+        if self.check_valid(((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1] - 1)), opponents):
             successors["Turni topka dolu"] = (opponents, ((man_pos[0], man_pos[1] - 1), (ball_pos[0], ball_pos[1] - 1)))
         #Desno
-        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1]), (ball_pos[0] + 1, ball_pos[1]))):
+        if self.check_valid(((man_pos[0] + 1, man_pos[1]), (ball_pos[0] + 1, ball_pos[1])), opponents):
             successors["Turni topka desno"] = (opponents, ((man_pos[0] + 1, man_pos[1]), (ball_pos[0] + 1, ball_pos[1])))
         #Gore-desno
-        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0] + 1, ball_pos[1]))):
+        if self.check_valid(((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0] + 1, ball_pos[1])), opponents):
             successors["Turni topka gore-desno"] = (opponents, ((man_pos[0] + 1, man_pos[1] + 1), (ball_pos[0] + 1, ball_pos[1])))
         #Dolu-Desno
-        if self.check_valid(opponents, ((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0] + 1, ball_pos[1]))):
+        if self.check_valid(((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0] + 1, ball_pos[1])), opponents):
             successors["Turni topka gore-desno"] = (opponents, ((man_pos[0] + 1, man_pos[1] - 1), (ball_pos[0] + 1, ball_pos[1])))
 
         return successors
@@ -546,18 +553,17 @@ class Football(Problem):
 
     def goal_test(self, state):
         return state[1] == (7, 2) or state[1] == (7, 3)
-        print()
 
     def h(self, node):
-        return 0
+        return 1
 
 
 if __name__ == '__main__':
     man_pos = tuple(map(int, input().split(',')))
     ball_pos = tuple(map(int, input().split(',')))
-    goal_pos = [(7, 2), (7, 3)]
-    opponents = [(3, 3), (5, 3)]
+    goal_pos = ((7, 2), (7, 3))
+    opponents = ((3, 3), (5, 3))
 
     football = Football(opponents, (man_pos, ball_pos), goal_pos)
     rez = astar_search(football)
-    print(rez.solution())
+    print(rez.solve())
