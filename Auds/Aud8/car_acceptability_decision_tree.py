@@ -9,6 +9,7 @@ def read_file(file_name):
 
     return dataset
 
+
 if __name__ == '__main__':
     dataset = read_file('car.csv')
 
