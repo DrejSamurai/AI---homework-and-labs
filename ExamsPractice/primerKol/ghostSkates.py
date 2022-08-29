@@ -17,6 +17,7 @@ class Problem:
         достапни од оваа состојба. Ако има многу следбеници, употребете
         итератор кој би ги генерирал следбениците еден по еден, наместо да
         ги генерирате сите одеднаш.
+
         :param state: дадена состојба
         :return:  речник од парови {акција : состојба} достапни од оваа
                   состојба
@@ -27,6 +28,7 @@ class Problem:
     def actions(self, state):
         """За дадена состојба state, врати листа од сите акции што може да
         се применат над таа состојба
+
         :param state: дадена состојба
         :return: листа на акции
         :rtype: list
@@ -36,6 +38,7 @@ class Problem:
     def result(self, state, action):
         """За дадена состојба state и акција action, врати ја состојбата
         што се добива со примена на акцијата над состојбата
+
         :param state: дадена состојба
         :param action: дадена акција
         :return: резултантна состојба
@@ -47,6 +50,7 @@ class Problem:
         на методот директно ја споредува state со self.goal, како што е
         специфицирана во конструкторот. Имплементирајте го овој метод ако
         проверката со една целна состојба self.goal не е доволна.
+
         :param state: дадена состојба
         :return: дали дадената состојба е целна состојба
         :rtype: bool
@@ -58,9 +62,10 @@ class Problem:
         state2 од состојбата state1 преку акцијата action, претпоставувајќи
         дека цената на патот до состојбата state1 е c. Ако проблемот е таков
         што патот не е важен, оваа функција ќе ја разгледува само состојбата
-        state2. Ако патот е важен, ќе ја разгледува цената c и можеби и
+        state2. Ако патот е важен, ќе ја разгледува цената c и можеби и
         state1 и action. Даденава имплементација му доделува цена 1 на секој
         чекор од патот.
+
         :param c: цена на патот до состојбата state1
         :param state1: дадена моментална состојба
         :param action: акција која треба да се изврши
@@ -71,9 +76,10 @@ class Problem:
         return c + 1
 
     def value(self):
-        """За проблеми на оптимизација, секоја состојба си има вредност.
+        """За проблеми на оптимизација, секоја состојба си има вредност. 
         Hill-climbing и сличните алгоритми се обидуваат да ја максимизираат
         оваа вредност.
+
         :return: вредност на состојба
         :rtype: float
         """
@@ -90,6 +96,7 @@ class Node:
     def __init__(self, state, parent=None, action=None, path_cost=0):
         """Креирај јазол од пребарувачкото дрво, добиен од parent со примена
         на акцијата action
+
         :param state: моментална состојба (current state)
         :param parent: родителска состојба (parent state)
         :param action: акција (action)
@@ -111,6 +118,7 @@ class Node:
 
     def expand(self, problem):
         """Излистај ги јазлите достапни во еден чекор од овој јазол.
+
         :param problem: даден проблем
         :return: листа на достапни јазли во еден чекор
         :rtype: list(Node)
@@ -121,6 +129,7 @@ class Node:
 
     def child_node(self, problem, action):
         """Дете јазел
+
         :param problem: даден проблем
         :param action: дадена акција
         :return: достапен јазел според дадената акција
@@ -133,6 +142,7 @@ class Node:
 
     def solution(self):
         """Врати ја секвенцата од акции за да се стигне од коренот до овој јазол.
+
         :return: секвенцата од акции
         :rtype: list
         """
@@ -140,6 +150,7 @@ class Node:
 
     def solve(self):
         """Врати ја секвенцата од состојби за да се стигне од коренот до овој јазол.
+
         :return: листа од состојби
         :rtype: list
         """
@@ -147,6 +158,7 @@ class Node:
 
     def path(self):
         """Врати ја листата од јазли што го формираат патот од коренот до овој јазол.
+
         :return: листа од јазли од патот
         :rtype: list(Node)
         """
@@ -176,17 +188,18 @@ class Node:
 
 class Queue:
     """Queue е апстрактна класа / интерфејс. Постојат 3 типа:
-        Stack(): Last In First Out Queue (стек).
-        FIFOQueue(): First In First Out Queue (редица).
-        PriorityQueue(order, f): Queue во сортиран редослед (подразбирливо,од најмалиот кон
+        Stack(): Last In First Out Queue (стек).
+        FIFOQueue(): First In First Out Queue (редица).
+        PriorityQueue(order, f): Queue во сортиран редослед (подразбирливо,од најмалиот кон
                                  најголемиот јазол).
-    """
+    """
 
     def __init__(self):
         raise NotImplementedError
 
     def append(self, item):
         """Додади го елементот item во редицата
+
         :param item: даден елемент
         :return: None
         """
@@ -194,6 +207,7 @@ class Queue:
 
     def extend(self, items):
         """Додади ги елементите items во редицата
+
         :param items: дадени елементи
         :return: None
         """
@@ -201,12 +215,14 @@ class Queue:
 
     def pop(self):
         """Врати го првиот елемент од редицата
+
         :return: прв елемент
         """
         raise NotImplementedError
 
     def __len__(self):
         """Врати го бројот на елементи во редицата
+
         :return: број на елементи во редицата
         :rtype: int
         """
@@ -214,6 +230,7 @@ class Queue:
 
     def __contains__(self, item):
         """Проверка дали редицата го содржи елементот item
+
         :param item: даден елемент
         :return: дали queue го содржи item
         :rtype: bool
@@ -324,6 +341,7 @@ def memoize(fn, slot=None):
     аргументи. Ако е специфициран slot, зачувај го резултатот во
     тој slot на првиот аргумент. Ако slot е None, зачувај ги
     резултатите во речник.
+
     :param fn: зададена функција
     :type fn: function
     :param slot: име на атрибут во кој се чуваат резултатите од функцијата
@@ -354,6 +372,7 @@ def best_first_graph_search(problem, f):
      функција за евалуација за да се одлучи кој е сосед најмногу ветува и
      потоа да се истражи. Ако до дадена состојба стигнат два пата, употреби
      го најдобриот пат.
+
     :param problem: даден проблем
     :type problem: Problem
     :param f: дадена функција за евалуација (проценка)
@@ -386,6 +405,7 @@ def best_first_graph_search(problem, f):
 
 def greedy_best_first_graph_search(problem, h=None):
     """ Greedy best-first пребарување се остварува ако се специфицира дека f(n) = h(n).
+
     :param problem: даден проблем
     :type problem: Problem
     :param h: дадена функција за хевристика
@@ -398,6 +418,7 @@ def greedy_best_first_graph_search(problem, h=None):
 
 def astar_search(problem, h=None):
     """ A* пребарување е best-first graph пребарување каде f(n) = g(n) + h(n).
+
     :param problem: даден проблем
     :type problem: Problem
     :param h: дадена функција за хевристика
@@ -412,6 +433,7 @@ def recursive_best_first_search(problem, h=None):
     """Recursive best first search - ја ограничува рекурзијата
     преку следење на f-вредноста на најдобриот алтернативен пат
     од било кој јазел предок (еден чекор гледање нанапред).
+
     :param problem: даден проблем
     :type problem: Problem
     :param h: дадена функција за хевристика
@@ -448,69 +470,11 @@ def recursive_best_first_search(problem, h=None):
     return result
 
 
-class Explorer(Problem):
-    def __init__(self, initial, goal):
+class GhostOnSkates(Problem):
+    def __init__(self, initial, walls, n, goal=None):
         super().__init__(initial, goal)
-        self.grid_size = [8, 6]
-
-    def successor(self, state):
-        # d=-1 down, d=1 up
-        # (x,y,(o1x,o1y,d),(o2x,o2y,d))
-        successors = dict()
-        man_x = state[0]
-        man_y = state[1]
-        obstacle1 = list(state[2])
-        obstacle2 = list(state[3])
-
-        if obstacle1[2] == 1:  # up
-            if obstacle1[1] == self.grid_size[1] - 1:
-                obstacle1[2] = -1
-                obstacle1[1] -= 1
-            else:
-                obstacle1[1] += 1
-        else:
-            if obstacle1[1] == 0:
-                obstacle2[2] = 1
-                obstacle1[1] += 1
-            else:
-                obstacle1[1] -= 1
-
-        if obstacle2[2] == 1:  # up
-            if obstacle2[1] == self.grid_size[1] - 1:
-                obstacle2[2] = -1
-                obstacle2[1] -= 1
-            else:
-                obstacle2[1] += 1
-        else:
-            if obstacle2[1] == 0:
-                obstacle2[2] = 1
-                obstacle2[1] += 1
-            else:
-                obstacle2[1] -= 1
-
-        obstacles = [(obstacle1[0], obstacle1[1]), (obstacle2[0], obstacle2[1])]
-
-        # right x = x+1
-        if man_x + 1 < self.grid_size[0] and (man_x + 1, man_y) not in obstacles:
-            successors["Right"] = (man_x + 1, man_y, (obstacle1[0], obstacle1[1], obstacle1[2]),
-                                   (obstacle2[0], obstacle2[1], obstacle2[2]))
-
-        # left x = x-1
-        if man_x - 1 > 0 and (man_x + 1, man_y) not in obstacles:
-            successors["Left"] = (man_x - 1, man_y, (obstacle1[0], obstacle1[1], obstacle1[2]),
-                                  (obstacle2[0], obstacle2[1], obstacle2[2]))
-
-        # up x = y+1
-        if man_y + 1 < self.grid_size[1] and (man_x,man_y+1) not in obstacles:
-            successors["Up"] = (man_x, man_y+1  , (obstacle1[0], obstacle1[1], obstacle1[2]),
-                                   (obstacle2[0], obstacle2[1],obstacle2[2]))
-
-        # down x = y-1
-        if man_y - 1 > 0 and (man_x,man_y-1) not in obstacles:
-            successors["Down"] = (man_x, man_y - 1, (obstacle1[0], obstacle1[1], obstacle1[2]),
-                                   (obstacle2[0], obstacle2[1],obstacle2[2]))
-
-        return successors
+        self.walls = walls
+        self.n = n
 
     def actions(self, state):
         return self.successor(state).keys()
@@ -519,26 +483,49 @@ class Explorer(Problem):
         return self.successor(state)[action]
 
     def goal_test(self, state):
-        return state[0] == self.goal[0] and state[1] == self.goal[1]
+        return state == self.goal
+
+    @staticmethod
+    def check_valid(state, walls, n):
+        if state[0] > 0 and state[0] < n and state[1] > 0 and state[1] < n and state not in walls:
+            return True
+        else:
+            return False
+
+    def successor(self, state):
+        successors = dict()
+        ghost_state = state[0]
+        ghost_x = ghost_state[0]
+        ghost_y = ghost_state[1]
+
+        for x in range (0,3):
+            #move up
+            if self.check_valid((ghost_x, ghost_y + x), self.walls, self.n):
+                successors[f"Gore {x}"] = ((ghost_x, ghost_y + x), self.walls, self.n)
+
+            # move right
+            if self.check_valid((ghost_x  + x, ghost_y), self.walls, self.n):
+                successors[f"Desno {x}"] = ((ghost_x  + x, ghost_y), self.walls, self.n)
+
+        return successors
+
 
     def h(self, node):
-        x_explorer = node.state[0]
-        y_explorer = node.state[1]
-        x_house = self.goal[0]
-        y_house = self.goal[1]
-        return abs(x_explorer - x_house) + abs(y_explorer - y_house)
+        px, py = node.state
+        gx, gy = self.goal
 
+        return (abs(px -gx) + abs(gy - py))/3
 
 if __name__ == '__main__':
-    man_x = int(input())
-    man_y = int(input())
-    house_x = int(input())
-    house_y = int(input())
-    obstacle1 = (2, 5, -1)
-    obstacle2 = (5, 0, 1)
+    n = int(input())
+    ghost_pos = (0, 0)
+    goal_pos = (n - 1, n - 1)
 
-    house = [house_x, house_y]
-    explorer = Explorer((man_x, man_y, obstacle1, obstacle2), house)
+    num_holes = int(input())
+    holes = list()
+    for _ in range(num_holes):
+        holes.append(tuple(map(int, input().split(','))))
 
-    rez = astar_search(explorer)
-    print(rez.solution())
+    problem = GhostOnSkates(ghost_pos, holes, n, goal_pos)
+    print(astar_search(problem).solution())
+

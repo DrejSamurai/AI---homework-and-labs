@@ -484,7 +484,7 @@ class Explorer(Problem):
                 obstacle1[1] -= 1
             else:
                 obstacle1[1] += 1
-        else:
+        else: #down
             if obstacle1[1] == 0:
                 obstacle2[2] = 1
                 obstacle1[1] += 1
@@ -497,7 +497,7 @@ class Explorer(Problem):
                 obstacle2[1] -= 1
             else:
                 obstacle2[1] += 1
-        else:
+        else: #down
             if obstacle2[1] == 0:
                 obstacle2[2] = 1
                 obstacle2[1] += 1
