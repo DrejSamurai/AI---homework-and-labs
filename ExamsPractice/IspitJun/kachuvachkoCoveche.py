@@ -477,7 +477,7 @@ class Rock(Problem):
         man_x, man_y = state[0]
         house_x, house_y, house_dir = state[1]
 
-        if (man_x, man_y) in self.allowed_pos:
+        if (man_x, man_y) not in self.allowed_pos:
             return False
 
         if man_x < 0 or man_x > 4 or man_y < 0 or man_y > 8 or house_x < 0 or house_y > 4:
