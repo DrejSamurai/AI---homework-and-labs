@@ -73,11 +73,11 @@ if __name__ == '__main__':
         if predicted == true_class:
             accueracy += 1
 
-    input_list = (input().split(' '))
-    input_x = input_list[:-1]
-    input_y = input_list[-1]
-    input_x = encoder.transform(input_x)
+    accueracy = accueracy / len(testset)
+
+    input_list = [float(el) for el in input().split(' ')]
+    transformed = encoder.transform([input_list])
 
     print(accueracy)
-    print(classifier.predict([input_x])[0])
-    print(classifier.predict_proba([input_x]))
+    print(classifier.predict(transformed)[0])
+    print(classifier.predict_proba(transformed))

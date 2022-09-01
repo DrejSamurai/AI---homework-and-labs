@@ -27,6 +27,6 @@ if __name__ == '__main__':
 
     # Tuka dodadete gi ogranicuvanjata
 
-
+    problem.addConstraint(max_four_in_team, variables)
 
     print(problem.getSolution())

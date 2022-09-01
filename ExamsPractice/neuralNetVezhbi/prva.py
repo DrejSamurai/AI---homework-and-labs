@@ -1413,11 +1413,11 @@ if __name__ == '__main__':
 
     accuracy = accuracy / len(test_set)
 
-    input_list = (input().split(' '))
-    input_x = input_list[:-1]
-    input_y = input_list[-1]
-    input_x = encoder.transform(input_x)
+    input_list = [el for el in input().split(' ')]
+    #input_x = input_list[:-1]
+    #input_y = input_list[-1]
+    transformed = encoder.transform([input_list])
 
     print(accuracy)
-    print(classificator.predict([input_x])[0])
-    print(classificator.predict_proba([input_x]))
+    print(classificator.predict(transformed)[0])
+    print(classificator.predict_proba(transformed))
